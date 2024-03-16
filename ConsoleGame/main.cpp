@@ -9,6 +9,33 @@
 
 using namespace std;
 
+// player
+class Player {
+public:
+	Player() = default;
+
+	size_t GetBodyLength() {
+		return body_.size();
+	}
+
+	string GetBody() {
+		return body_;
+	}
+
+	int GetPosition() {
+		return pos_x_;
+	}
+
+	void SetPosition(int x) {
+		pos_x_ = x;
+	}
+
+private:
+	string body_ = "-----";
+	int pos_x_ = 0;
+	//int pos_y_ = 0;
+};
+
 // field
 class Field {
 public:
@@ -21,6 +48,11 @@ public:
 			field_.push_back(center_string);
 		}
 		field_.push_back(top_bottom_string);
+	}
+
+	void AddPlayer(Player& player) {
+		string& player_string = field_[field_.size() - 2];
+		player_string.replace(40, player.GetBodyLength(), player.GetBody());
 	}
 
 	void PrintField() {
@@ -39,20 +71,21 @@ private:
 	vector<string> field_;
 };
 
-// player
-class Player {
-	string body = "***";
-	int pos_x = 0;
-	int pos_y = 0;
-};
-
 int main() {
-	// draw field
+	// create field
 	Field field(80, 40);
 
+	/*while (true) {
+		field.PrintField();
+	}*/
+
+	// create player
+	Player player = Player();
+
+	// add player
+	field.AddPlayer(player);
+
+	// draw field
 	field.PrintField();
-
-	// draw player
-
 	
 }
