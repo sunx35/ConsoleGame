@@ -7,9 +7,10 @@
 #include <vector>
 #include <string>
 #include <chrono>
-//#include <WinUser.h>
+#include <Windows.h>
+#include <WinUser.h>
 //#include <Windows.h>
-#include <conio.h>
+//#include <conio.h>
 
 using namespace std;
 
@@ -99,35 +100,35 @@ int main() {
 	auto start_time = chrono::steady_clock::now();
 	int interval = 200; // ms
 
-	char c;
-	int key_code;
+	/*char c;
+	int key_code;*/
 
 	while (true) {
 		if (chrono::duration_cast<chrono::milliseconds>(chrono::steady_clock::now() - start_time).count() > interval) {
 			start_time = chrono::steady_clock::now();
 
 			// input
-			c = _getch();
-			key_code = static_cast<int>(c);
-			if (key_code == 75)
-			{
-				//cout << "Нажата клавиша Влево\n";
-				player.SetPosition(player.GetPosition() - 1);
-			}
-			if (key_code == 77)
-			{
-				//cout << "Нажата клавиша Вправо\n";
-				player.SetPosition(player.GetPosition() + 1);
-			}
-
-			//if (GetAsyncKeyState(VK_LEFT)) //проверяем, нажата ли клафиша влево
+			//c = _getch();
+			//key_code = static_cast<int>(c);
+			//if (key_code == 75)
 			//{
+			//	//cout << "Нажата клавиша Влево\n";
 			//	player.SetPosition(player.GetPosition() - 1);
 			//}
-			//if (GetAsyncKeyState(VK_RIGHT)) //проверяем, нажата ли клафиша вправо
+			//if (key_code == 77)
 			//{
+			//	//cout << "Нажата клавиша Вправо\n";
 			//	player.SetPosition(player.GetPosition() + 1);
 			//}
+
+			if (GetAsyncKeyState(VK_LEFT)) //проверяем, нажата ли клафиша влево
+			{
+				player.SetPosition(player.GetPosition() - 1);
+			}
+			if (GetAsyncKeyState(VK_RIGHT)) //проверяем, нажата ли клафиша вправо
+			{
+				player.SetPosition(player.GetPosition() + 1);
+			}
 			
 			// update player
 			field.UpdatePlayer(player);
