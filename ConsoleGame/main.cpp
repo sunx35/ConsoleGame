@@ -68,10 +68,14 @@ public:
 		player_string.replace((player.GetPosition() + 1), player.GetBodyLength(), player.GetBody());
 	}
 
-	void PrintField() {
+	void PrintField() const {
 		for (auto &each : field_) {
 			cout << each << endl;
 		}
+	}
+
+	int GetWidth() const {
+		return width_;
 	}
 
 private:
@@ -98,7 +102,7 @@ int main() {
 	//field.PrintField();
 
 	auto start_time = chrono::steady_clock::now();
-	int interval = 200; // ms
+	int interval = 100; // ms
 
 	/*char c;
 	int key_code;*/
@@ -123,11 +127,17 @@ int main() {
 
 			if (GetAsyncKeyState(VK_LEFT)) //проверяем, нажата ли клафиша влево
 			{
-				player.SetPosition(player.GetPosition() - 1);
+				int new_pos = player.GetPosition() - 1;
+				if (new_pos >= 0 && new_pos <= field.GetWidth() - player.GetBodyLength()) {
+					player.SetPosition(new_pos);
+				}
 			}
 			if (GetAsyncKeyState(VK_RIGHT)) //проверяем, нажата ли клафиша вправо
 			{
-				player.SetPosition(player.GetPosition() + 1);
+				int new_pos = player.GetPosition() + 1;
+				if (new_pos >= 0 && new_pos <= field.GetWidth() - player.GetBodyLength()) {
+					player.SetPosition(new_pos);
+				}
 			}
 			
 			// update player
