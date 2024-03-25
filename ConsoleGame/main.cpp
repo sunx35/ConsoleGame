@@ -101,24 +101,11 @@ public:
 	void AddBall(int pos_x, int pos_y, Ball& ball) {
 		ball.SetPosition(pos_x, pos_y);
 
-		string& ball_string = field_[pos_y];
-		ball_string.replace(pos_x, ball.GetBodyLength(), ball.GetBody());
+		string& ball_string = field_[pos_y + 1];
+		ball_string.replace(pos_x + 1, ball.GetBodyLength(), ball.GetBody());
 	}
 
 	void UpdateBall(Ball& ball) {
-		// две строки, которые нужно изменить
-		/*
-		string& before = field_[ball.GetPosition().second + 1];
-		bool direction_up = false;
-		string* after = nullptr;
-		if (direction_up) {
-			after = &field_[ball.GetPosition().second + 1 - 1];
-		}
-		else {
-			after = &field_[ball.GetPosition().second + 1 + 1];
-		}
-		*/
-
 		// меняем реальную позицию ball, в зависимости от того, куда двигается мяч.
 		bool direction_up = false;
 		bool direction_right = true;
@@ -147,19 +134,6 @@ public:
 		// просто перерисовываем строки поля, где был и есть мяч.
 		before->replace(prev_x + 1, ball.GetBodyLength(), "  "s);
 		after->replace(next_x + 1, ball.GetBodyLength(), ball.GetBody());
-
-		/*
-		before.replace(ball.GetPosition().first + 1, ball.GetBodyLength(), " "s);
-
-		bool direction_right = true;
-		if (direction_right) {
-			ball.SetPosition(ball.GetPosition().first + 1 + ball.GetBodyLength(), );
-			after->replace(ball.GetPosition().first + 1 + ball.GetBodyLength(), ball.GetBodyLength(), ball.GetBody());
-		}
-		else {
-			after->replace(ball.GetPosition().first + 1 - ball.GetBodyLength(), ball.GetBodyLength(), ball.GetBody());
-		}
-		*/
 	}
 
 	void PrintField() const {
