@@ -41,6 +41,36 @@ private:
 	//int pos_y_ = 0;
 };
 
+// ball
+class Ball {
+public:
+	//Ball() = default;
+
+	Ball(string body = "()"s, int pos_x = 0, int pos_y = 0) : body_(body), pos_x_(pos_x), pos_y_(pos_y) {};
+
+	size_t GetBodyLength() {
+		return body_.size();
+	}
+
+	string GetBody() {
+		return body_;
+	}
+
+	pair<int, int> GetPosition() const {
+		return { pos_x_, pos_y_ };
+	}
+
+	void SetPosition(int x, int y) {
+		pos_x_ = x;
+		pos_y_ = y;
+	}
+
+private:
+	string body_ = "()";
+	int pos_x_ = 0;
+	int pos_y_ = 0;
+};
+
 // field
 class Field {
 public:
@@ -66,6 +96,19 @@ public:
 		string& player_string = field_[field_.size() - 2];
 		player_string = vertical_bound_char_ + string(width_, ' ') + vertical_bound_char_;
 		player_string.replace((player.GetPosition() + 1), player.GetBodyLength(), player.GetBody());
+	}
+
+	void AddBall(int pos_x, int pos_y, Ball& ball) {
+		ball.SetPosition(pos_x, pos_y);
+
+		string& ball_string = field_[pos_y];
+		ball_string.replace(pos_x, ball.GetBodyLength(), ball.GetBody());
+	}
+
+	void UpdateBall(Ball& ball) {
+		// две строки, которые нужно изменить
+		string before;
+		string after;
 	}
 
 	void PrintField() const {
@@ -97,6 +140,12 @@ int main() {
 
 	// add player
 	field.AddPlayer(player);
+
+	// create ball
+	Ball ball = Ball();
+
+	// add ball
+	field.AddBall(5, 20, ball);
 
 	// draw field
 	//field.PrintField();
@@ -142,6 +191,8 @@ int main() {
 			
 			// update player
 			field.UpdatePlayer(player);
+
+			field.UpdateBall(ball);
 
 			// update field
 			system("cls");
