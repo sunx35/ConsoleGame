@@ -65,10 +65,25 @@ public:
 		pos_y_ = y;
 	}
 
+	struct Directions {
+		bool direction_up;
+		bool direction_right;
+	};
+
+	Directions GetDirections() {
+		return { direction_up_, direction_right_ };
+	}
+
+	void SetDirectionY(bool direction_up) {
+		direction_up_ = direction_up;
+	}
+
 private:
 	string body_ = "()";
 	int pos_x_ = 0;
 	int pos_y_ = 0;
+	bool direction_up_ = false;
+	bool direction_right_ = true;
 };
 
 // field
@@ -106,17 +121,27 @@ public:
 	}
 
 	void UpdateBall(Ball& ball) {
-		// меняем реальную позицию ball, в зависимости от того, куда двигается мяч.
-		bool direction_up = false;
-		bool direction_right = true;
+		// нужно распознать столкновение с игроком или с границей поля.
+		// в зависимости от того с чем столкновение, выбрать в какую сторону будет дальше лететь мяч
+		// то есть, изменить направление движения.
+		// если врезается в правую стенку, горизонтальное направление меняется.
+		// если в верхнюю, вертикальное направление меняется.
+		// 
+		// определить что в следующей строке может быть плеер.
+		// если это так, изменить направление и string_after. то есть отрисовывать в другое место.
 
-		string* before = &field_[ball.GetPosition().second + 1];
-		string* after = nullptr;
+
+		// меняем реальную позицию ball, в зависимости от того, куда двигается мяч.
+		bool direction_up = ball.GetDirections().direction_up;
+		bool direction_right = ball.GetDirections().direction_right;
+
+		string* string_before = &field_[ball.GetPosition().second + 1];
+		string* string_after = nullptr;
 		if (direction_up) {
-			after = &field_[ball.GetPosition().second + 1 - 1];
+			string_after = &field_[ball.GetPosition().second + 1 - 1];
 		}
 		else {
-			after = &field_[ball.GetPosition().second + 1 + 1];
+			string_after = &field_[ball.GetPosition().second + 1 + 1];
 		}
 
 		int prev_x = ball.GetPosition().first;
@@ -125,15 +150,23 @@ public:
 		int next_x;
 		int next_y;
 
-		direction_right ? next_x = prev_x + ball.GetBodyLength() : prev_x - ball.GetBodyLength();
+		direction_right ? next_x = prev_x + ball.GetBodyLength() : next_x = prev_x - ball.GetBodyLength();
 		direction_up ? next_y = prev_y - 1 : next_y = prev_y + 1;
+
+		// check collision
+		if ((*string_after)[next_x + 1] == '-') {
+			//direction_up = !direction_up;
+			ball.SetDirectionY(!direction_up);
+			string_after = &field_[ball.GetPosition().second + 1 - 1];
+			next_y = prev_y - 1;
+		}
 
 		// set pos
 		ball.SetPosition(next_x, next_y);
 
 		// просто перерисовываем строки поля, где был и есть мяч.
-		before->replace(prev_x + 1, ball.GetBodyLength(), "  "s);
-		after->replace(next_x + 1, ball.GetBodyLength(), ball.GetBody());
+		string_before->replace(prev_x + 1, ball.GetBodyLength(), "  "s);
+		string_after->replace(next_x + 1, ball.GetBodyLength(), ball.GetBody());
 	}
 
 	void PrintField() const {
@@ -178,26 +211,9 @@ int main() {
 	auto start_time = chrono::steady_clock::now();
 	int interval = 100; // ms
 
-	/*char c;
-	int key_code;*/
-
 	while (true) {
 		if (chrono::duration_cast<chrono::milliseconds>(chrono::steady_clock::now() - start_time).count() > interval) {
 			start_time = chrono::steady_clock::now();
-
-			// input
-			//c = _getch();
-			//key_code = static_cast<int>(c);
-			//if (key_code == 75)
-			//{
-			//	//cout << "Нажата клавиша Влево\n";
-			//	player.SetPosition(player.GetPosition() - 1);
-			//}
-			//if (key_code == 77)
-			//{
-			//	//cout << "Нажата клавиша Вправо\n";
-			//	player.SetPosition(player.GetPosition() + 1);
-			//}
 
 			if (GetAsyncKeyState(VK_LEFT)) //проверяем, нажата ли клафиша влево
 			{
