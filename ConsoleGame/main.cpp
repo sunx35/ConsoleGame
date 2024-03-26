@@ -74,6 +74,10 @@ public:
 		return { direction_up_, direction_right_ };
 	}
 
+	void SetDirectionX(bool direction_right) {
+		direction_right_ = direction_right;
+	}
+
 	void SetDirectionY(bool direction_up) {
 		direction_up_ = direction_up;
 	}
@@ -160,6 +164,11 @@ public:
 			string_after = &field_[ball.GetPosition().second + 1 - 1];
 			next_y = prev_y - 1;
 		}
+		else if (next_x == (width_ - 1) + 1) {
+			// правая граница поля
+			ball.SetDirectionX(!direction_right);
+			next_x = prev_x - 1;
+		}
 
 		// set pos
 		ball.SetPosition(next_x, next_y);
@@ -190,20 +199,11 @@ private:
 };
 
 int main() {
-	// create field
 	Field field(80, 40);
-
-	// create player
 	Player player = Player();
-
-	// add player
 	field.AddPlayer(player);
-
-	// create ball
 	Ball ball = Ball();
-
-	// add ball
-	field.AddBall(5, 20, ball);
+	field.AddBall(2, 20, ball); // должно быть четное число для ball position (x)
 
 	// draw field
 	//field.PrintField();
@@ -230,9 +230,7 @@ int main() {
 				}
 			}
 			
-			// update player
 			field.UpdatePlayer(player);
-
 			field.UpdateBall(ball);
 
 			// update field
