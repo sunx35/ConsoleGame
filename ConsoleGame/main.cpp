@@ -158,7 +158,7 @@ public:
 		direction_up ? next_y = prev_y - 1 : next_y = prev_y + 1;
 
 		// check collision
-		if ((*string_after)[next_x + 1] == '-') {
+		if (next_x >= 0 && (*string_after)[next_x + 1] == '-') {  // индекс меньше нуля падает
 			//direction_up = !direction_up;
 			ball.SetDirectionY(!direction_up);
 			string_after = &field_[ball.GetPosition().second + 1 - 1];
@@ -167,7 +167,18 @@ public:
 		else if (next_x == (width_ - 1) + 1) {
 			// правая граница поля
 			ball.SetDirectionX(!direction_right);
-			next_x = prev_x - 1;
+			next_x = prev_x - 2;
+		}
+		else if (string_after == &field_[0]) {
+			// верхняя граница
+			ball.SetDirectionY(!direction_up);
+			string_after = string_after + 2;
+			next_y = prev_y + 1;
+		}
+		else if (next_x == -2) {
+			// левая граница
+			ball.SetDirectionX(!direction_right);
+			next_x = prev_x + 2;
 		}
 
 		// set pos
@@ -236,6 +247,8 @@ int main() {
 			// update field
 			system("cls");
 			field.PrintField();
+
+			cout << ball.GetPosition().first << endl;
 		}
 	}
 }
